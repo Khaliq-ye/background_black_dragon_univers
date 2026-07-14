@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Naga Kursor Overlay</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+  canvas { display: block; background: transparent; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+
+const SHAPES = {"head":{"name":"head","width":1804,"height":1970,"aspect":0.9157,"outline":[[-0.0022,-0.5],[-0.0787,-0.4482],[-0.1375,-0.3832],[-0.1608,-0.3056],[-0.2339,-0.1924],[-0.2528,-0.0944],[-0.3248,0.0132],[-0.3315,-0.032],[-0.4279,0.0868],[-0.4845,0.2239],[-0.5,0.3746],[-0.4873,0.3848],[-0.3969,0.2782],[-0.2988,0.2162],[-0.2733,0.135],[-0.2761,0.1645],[-0.2594,0.1736],[-0.2882,0.2624],[-0.296,0.3614],[-0.2816,0.4558],[-0.2611,0.4995],[-0.25,0.4914],[-0.2533,0.4086],[-0.2345,0.3152],[-0.1574,0.1817],[-0.1475,0.1919],[-0.122,0.1893],[-0.0831,0.2711],[-0.0704,0.265],[-0.0521,0.197],[-0.0355,0.2015],[-0.0011,0.2711],[0.0238,0.2406],[0.0349,0.2015],[0.0516,0.197],[0.0698,0.265],[0.0826,0.2711],[0.1214,0.1893],[0.1469,0.1919],[0.1569,0.1817],[0.2339,0.3152],[0.2528,0.4086],[0.2494,0.4914],[0.2611,0.4995],[0.2844,0.4426],[0.2955,0.3614],[0.2877,0.2624],[0.2589,0.1736],[0.2755,0.1645],[0.2722,0.1355],[0.2982,0.2162],[0.3963,0.2782],[0.4906,0.3858],[0.4994,0.3234],[0.4839,0.2239],[0.454,0.1386],[0.4019,0.0472],[0.3309,-0.032],[0.3243,0.0132],[0.2522,-0.0944],[0.2334,-0.1924],[0.1602,-0.3056],[0.1369,-0.3832],[0.0637,-0.4604]],"holes":[[[0.0904,0.1462],[0.1075,0.166],[0.1109,0.1726],[0.0976,0.2132],[0.0843,0.2437],[0.0809,0.2462],[0.0715,0.2173],[0.066,0.1898],[0.066,0.1822],[0.0637,0.1772],[0.0804,0.1538],[0.0876,0.1462]],[[-0.0909,0.1462],[-0.0881,0.1462],[-0.0809,0.1538],[-0.0643,0.1772],[-0.0665,0.1822],[-0.0665,0.1898],[-0.0721,0.2173],[-0.0815,0.2462],[-0.0848,0.2437],[-0.0981,0.2132],[-0.1114,0.1726],[-0.1081,0.166]],[[-0.0011,0.1452],[0.0078,0.1528],[0.0211,0.1711],[0.0211,0.1909],[0.0177,0.2112],[0.01,0.2335],[0.0006,0.2503],[-0.0017,0.2497],[-0.0127,0.2284],[-0.0183,0.2112],[-0.0216,0.1909],[-0.0216,0.1711]],[[0.1984,0.1269],[0.2284,0.1447],[0.2506,0.1914],[0.2672,0.2431],[0.2794,0.3294],[0.2711,0.4269],[0.2611,0.3548],[0.2389,0.2848],[0.2045,0.2198],[0.1657,0.1706]],[[-0.199,0.1269],[-0.1663,0.1706],[-0.2051,0.2198],[-0.2395,0.2848],[-0.2616,0.3548],[-0.2716,0.4269],[-0.2799,0.3294],[-0.2677,0.2431],[-0.2511,0.1914],[-0.2289,0.1447]],[[-0.0011,-0.0152],[0.0022,-0.0137],[0.0205,0.0061],[0.0255,0.0157],[0.0244,0.0376],[0.0188,0.0614],[0.0006,0.1005],[-0.0022,0.0995],[-0.0183,0.0645],[-0.0261,0.0294],[-0.0255,0.0122]],[[0.1508,-0.0812],[0.1757,-0.066],[0.1774,-0.0614],[0.1774,-0.0345],[0.1729,-0.0091],[0.1641,0.0152],[0.158,0.0249],[0.1535,0.0223],[0.1369,-0.0071],[0.1303,-0.0274],[0.1258,-0.0604]],[[-0.1513,-0.0812],[-0.1264,-0.0604],[-0.1308,-0.0274],[-0.1375,-0.0071],[-0.1541,0.0223],[-0.1585,0.0249],[-0.1646,0.0152],[-0.1735,-0.0091],[-0.1779,-0.0345],[-0.1779,-0.0614],[-0.1763,-0.066]],[[-0.0011,-0.1797],[0.0033,-0.1772],[0.0111,-0.168],[0.0255,-0.1457],[0.0233,-0.1228],[0.0177,-0.1015],[0.01,-0.0832],[0.0006,-0.0675],[-0.005,-0.0731],[-0.0161,-0.0954],[-0.0227,-0.1178],[-0.0261,-0.1457],[-0.0216,-0.1538]],[[0.1364,-0.2497],[0.1563,-0.233],[0.1763,-0.2046],[0.1962,-0.166],[0.2057,-0.1355],[0.2034,-0.136],[0.1879,-0.167],[0.1779,-0.1822],[0.1513,-0.2142],[0.1391,-0.2396]],[[-0.1369,-0.2497],[-0.1397,-0.2396],[-0.1519,-0.2142],[-0.1785,-0.1822],[-0.1885,-0.167],[-0.204,-0.136],[-0.2062,-0.1355],[-0.1968,-0.166],[-0.1768,-0.2046],[-0.1569,-0.233]],[[-0.0011,-0.3472],[0.0094,-0.3411],[0.0288,-0.3234],[0.0288,-0.2975],[0.0244,-0.2761],[0.0177,-0.2589],[0.0006,-0.232],[-0.0072,-0.2396],[-0.0183,-0.2589],[-0.0249,-0.2761],[-0.0294,-0.2975],[-0.0294,-0.3234]]]},"body":{"name":"body","width":1664,"height":1782,"aspect":0.9338,"outline":[[-0.0024,-0.5],[-0.2356,-0.1953],[-0.4014,-0.1274],[-0.5,0.3704],[-0.2374,0.1212],[-0.1082,0.2217],[0.0018,0.4994],[0.1076,0.2217],[0.2368,0.1212],[0.4904,0.3737],[0.4994,0.3642],[0.4008,-0.1274],[0.2368,-0.1936]],"holes":[]},"wing":{"name":"wing","width":3814,"height":1428,"aspect":2.6709,"outline":[[-0.5,-0.4853],[-0.4171,-0.3739],[-0.451,-0.4664],[-0.3595,-0.4405],[-0.275,-0.3648],[-0.1775,-0.1954],[-0.1049,0.028],[-0.2577,-0.1583],[-0.3503,-0.1793],[-0.4216,-0.1485],[-0.3574,-0.0182],[-0.3933,-0.138],[-0.2389,-0.0931],[-0.1628,0.0049],[-0.1012,0.1394],[-0.2336,0.0546],[-0.366,0.1148],[-0.3076,0.2178],[-0.3377,0.1211],[-0.2399,0.1015],[-0.1571,0.1492],[-0.0745,0.2661],[-0.1961,0.2535],[-0.3099,0.369],[-0.2538,0.4685],[-0.2889,0.3634],[-0.2024,0.3032],[-0.1172,0.3088],[-0.0506,0.3578],[-0.0031,0.4993],[0.0503,0.3578],[0.1169,0.3088],[0.2021,0.3032],[0.2887,0.3634],[0.2533,0.4685],[0.3096,0.369],[0.1959,0.2535],[0.0742,0.2661],[0.1568,0.1492],[0.2396,0.1015],[0.3374,0.1211],[0.3073,0.2178],[0.3658,0.1148],[0.2334,0.0546],[0.1009,0.1387],[0.237,-0.0917],[0.393,-0.138],[0.3574,-0.0182],[0.4213,-0.1485],[0.35,-0.1793],[0.2575,-0.1583],[0.1046,0.028],[0.1772,-0.1954],[0.2748,-0.3648],[0.3592,-0.4405],[0.4507,-0.4664],[0.4169,-0.3732],[0.4997,-0.4853],[0.3922,-0.4944],[0.2784,-0.4202],[0.182,-0.2801],[0.0994,-0.0728],[0.0388,-0.1541],[0.0834,0.0301],[0.0545,0.2388],[0.0003,0.409],[-0.0548,0.2388],[-0.0836,0.0301],[-0.0391,-0.1541],[-0.0996,-0.0728],[-0.1822,-0.2801],[-0.2787,-0.4202],[-0.3925,-0.4944]],"holes":[[[-0.0469,0.3221],[-0.0283,0.3775],[-0.0026,0.4405],[0.0034,0.4391],[0.0281,0.3775],[0.0456,0.3214],[0.0467,0.3242],[0.0241,0.4055],[-0.0005,0.4706],[-0.0275,0.3957]],[[0.1589,0.2717],[0.1586,0.2745],[0.1384,0.2759],[0.1127,0.2843],[0.06,0.3186],[0.0635,0.3018],[0.097,0.2822],[0.1337,0.271]],[[-0.1592,0.2717],[-0.134,0.271],[-0.0973,0.2822],[-0.0637,0.3018],[-0.0603,0.3186],[-0.113,0.2843],[-0.1387,0.2759],[-0.1589,0.2745]],[[0.1888,0.0952],[0.1327,0.1457],[0.1064,0.1793],[0.0773,0.2248],[0.0813,0.1996],[0.1164,0.152],[0.1573,0.1127]],[[-0.189,0.0952],[-0.1576,0.1127],[-0.1167,0.152],[-0.0815,0.1996],[-0.0776,0.2248],[-0.1067,0.1793],[-0.1329,0.1457]],[[0.1961,-0.077],[0.1416,0.0098],[0.0899,0.1268],[0.092,0.098],[0.1259,0.0259],[0.1626,-0.0357]],[[-0.1964,-0.077],[-0.1628,-0.0357],[-0.1261,0.0259],[-0.0923,0.098],[-0.0902,0.1268],[-0.1418,0.0098]],[[0.0724,-0.0889],[0.0732,-0.0889],[0.0734,-0.0875],[0.0752,-0.0861],[0.076,-0.0833],[0.0768,-0.0833],[0.0776,-0.0805],[0.0784,-0.0805],[0.0792,-0.0777],[0.08,-0.0777],[0.0813,-0.0735],[0.0821,-0.0735],[0.0829,-0.0707],[0.0836,-0.0707],[0.085,-0.0665],[0.0857,-0.0665],[0.087,-0.063],[0.087,-0.0553],[0.0865,-0.0546],[0.0865,-0.0413],[0.0863,-0.0406],[0.0855,-0.0406],[0.0847,-0.0427],[0.0847,-0.0448],[0.0836,-0.0469],[0.0836,-0.049],[0.0826,-0.0511],[0.0826,-0.0532],[0.081,-0.0567],[0.081,-0.0588],[0.0794,-0.0623],[0.0794,-0.0644],[0.0773,-0.0693],[0.0773,-0.0714],[0.0752,-0.0763],[0.0752,-0.0784],[0.0721,-0.0861]],[[-0.0726,-0.0889],[-0.0724,-0.0861],[-0.0755,-0.0784],[-0.0755,-0.0763],[-0.0776,-0.0714],[-0.0776,-0.0693],[-0.0797,-0.0644],[-0.0797,-0.0623],[-0.0813,-0.0588],[-0.0813,-0.0567],[-0.0829,-0.0532],[-0.0829,-0.0511],[-0.0839,-0.049],[-0.0839,-0.0469],[-0.085,-0.0448],[-0.085,-0.0427],[-0.0857,-0.0406],[-0.0865,-0.0406],[-0.0868,-0.0413],[-0.0868,-0.0546],[-0.0873,-0.0553],[-0.0873,-0.063],[-0.086,-0.0665],[-0.0852,-0.0665],[-0.0839,-0.0707],[-0.0831,-0.0707],[-0.0823,-0.0735],[-0.0815,-0.0735],[-0.0802,-0.0777],[-0.0794,-0.0777],[-0.0787,-0.0805],[-0.0779,-0.0805],[-0.0771,-0.0833],[-0.0763,-0.0833],[-0.0755,-0.0861],[-0.0747,-0.0861],[-0.0745,-0.0875]],[[0.1854,-0.2514],[0.1363,-0.1261],[0.0975,0.0056],[0.0983,-0.0364],[0.1036,-0.0427],[0.123,-0.105],[0.1453,-0.1646]],[[-0.1856,-0.2514],[-0.1455,-0.1646],[-0.1232,-0.105],[-0.1038,-0.0427],[-0.0986,-0.0364],[-0.0978,0.0056],[-0.1366,-0.1261]]]},
+"hand":{"name":"hand","width":1564,"height":1048,"aspect":1.4924,"outline":[[-0.4962,-0.4408],[-0.4949,-0.2605],[-0.4501,-0.1193],[-0.3951,-0.0344],[-0.3708,0.2529],[-0.3133,0.4971],[-0.3012,0.4914],[-0.2903,0.3655],[-0.2142,0.2796],[-0.1624,0.1823],[-0.0409,0.1002],[0.0684,0.1059],[0.1618,0.1823],[0.2136,0.2796],[0.2928,0.3702],[0.3005,0.4914],[0.3139,0.4952],[0.3702,0.2529],[0.3945,-0.0344],[0.4495,-0.1193],[0.4942,-0.2605],[0.4942,-0.4427],[0.4226,-0.2309],[0.4277,-0.4752],[0.4143,-0.4752],[0.3638,-0.2653],[0.3549,-0.3588],[0.3753,-0.4962],[0.3338,-0.437],[0.3069,-0.3168],[0.3043,-0.1966],[0.3261,-0.0487],[0.2896,0.1088],[0.2347,0.0258],[0.2283,-0.0315],[0.2717,-0.0763],[0.195,-0.1145],[0.0198,-0.084],[-0.2187,-0.1088],[-0.2737,-0.0725],[-0.2289,-0.0315],[-0.2353,0.0258],[-0.2903,0.1088],[-0.3267,-0.0487],[-0.305,-0.1966],[-0.3075,-0.3168],[-0.3344,-0.437],[-0.376,-0.4962],[-0.3555,-0.3588],[-0.3645,-0.2653],[-0.415,-0.4752],[-0.4284,-0.4752],[-0.4233,-0.2309],[-0.4597,-0.3177],[-0.484,-0.437]],"holes":[[[0.4866,-0.3826],[0.4783,-0.2643],[0.4629,-0.2538],[0.4572,-0.2748]],[[-0.4872,-0.3826],[-0.4578,-0.2748],[-0.4636,-0.2538],[-0.4789,-0.2643]],[[0.4162,-0.438],[0.413,-0.2987],[0.3964,-0.2882],[0.3855,-0.3073]],[[-0.4169,-0.438],[-0.3862,-0.3073],[-0.3971,-0.2882],[-0.4137,-0.2987]],[[0.351,-0.4418],[0.3427,-0.3626],[0.344,-0.3197],[0.3274,-0.3111],[0.3242,-0.3416],[0.3293,-0.374]],[[-0.3517,-0.4418],[-0.3299,-0.374],[-0.3248,-0.3416],[-0.328,-0.3111],[-0.3446,-0.3197],[-0.3434,-0.3626]]]},
+"foot":{"name":"foot","width":852,"height":948,"aspect":0.8987,"outline":[[-0.3944,-0.3671],[-0.4624,-0.2152],[-0.3474,0.0496],[-0.4155,0.0253],[-0.4155,0.0949],[-0.4636,0.0274],[-0.4883,0.019],[-0.5,0.0295],[-0.4765,0.1224],[-0.4977,0.1435],[-0.4765,0.23],[-0.4765,0.3428],[-0.4484,0.3755],[-0.4437,0.4926],[-0.4143,0.4863],[-0.3697,0.3797],[-0.3204,0.3534],[-0.2758,0.2426],[-0.2265,0.1709],[-0.1878,0.1424],[-0.0833,0.1276],[-0.0927,0.1034],[-0.1702,0.0686],[-0.1984,-0.1477],[-0.0669,-0.2162],[0.0012,-0.2711],[0.0657,-0.2162],[0.1972,-0.1477],[0.169,0.0686],[0.0915,0.1034],[0.0822,0.1276],[0.1866,0.1424],[0.2254,0.1709],[0.2746,0.2426],[0.3192,0.3534],[0.3685,0.3797],[0.4014,0.4673],[0.4378,0.4968],[0.4472,0.3755],[0.4754,0.3428],[0.4754,0.23],[0.4965,0.1551],[0.4754,0.1224],[0.4988,0.0295],[0.4871,0.019],[0.4624,0.0274],[0.4143,0.0949],[0.4143,0.0253],[0.3908,0.0232],[0.3462,0.0496],[0.4613,-0.2152],[0.4002,-0.3608],[0.3756,-0.3671],[0.3498,-0.3333],[0.1068,-0.5],[0.0458,-0.4789],[-0.0657,-0.481],[-0.108,-0.5],[-0.3509,-0.3333],[-0.3768,-0.3671]],"holes":[[[0.3967,0.3576],[0.4096,0.3576],[0.4272,0.3692],[0.4237,0.4557],[0.4096,0.4378],[0.3885,0.3766]],[[-0.3979,0.3576],[-0.3897,0.3766],[-0.4061,0.4272],[-0.4249,0.4557],[-0.4284,0.3692],[-0.4108,0.3576]],[[0.2488,0.0928],[0.2441,0.1129],[0.2218,0.1245],[0.1162,0.115],[0.2136,0.0707],[0.2336,0.0749]],[[-0.25,0.0928],[-0.2347,0.0749],[-0.2148,0.0707],[-0.1174,0.115],[-0.223,0.1245],[-0.2453,0.1129]],[[0.473,0.0475],[0.4554,0.1192],[0.4448,0.1287],[0.4366,0.1287],[0.4284,0.1181],[0.4401,0.0865]],[[-0.4742,0.0475],[-0.4413,0.0865],[-0.4296,0.1181],[-0.4378,0.1287],[-0.446,0.1287],[-0.4566,0.1192]],[[0.3955,0.0432],[0.385,0.1224],[0.3603,0.0886],[0.3791,0.0549]],[[-0.3967,0.0432],[-0.3803,0.0549],[-0.3615,0.0886],[-0.3862,0.1224]],[[0.3826,-0.3428],[0.3897,-0.3354],[0.4061,-0.289],[0.4049,-0.2827],[0.3697,-0.3154]],[[-0.3838,-0.3428],[-0.3709,-0.3154],[-0.4061,-0.2827],[-0.4026,-0.3038],[-0.3908,-0.3354]]]}};
+
+function buildPath(shape) {
+  const p = new Path2D();
+  const o = shape.outline;
+  p.moveTo(o[0][0], o[0][1]);
+  for (let i = 1; i < o.length; i++) p.lineTo(o[i][0], o[i][1]);
+  p.closePath();
+  for (const h of shape.holes) {
+    p.moveTo(h[0][0], h[0][1]);
+    for (let i = 1; i < h.length; i++) p.lineTo(h[i][0], h[i][1]);
+    p.closePath();
+  }
+  return p;
+}
+function buildOutlineOnlyPath(shape) {
+  const p = new Path2D();
+  const o = shape.outline;
+  p.moveTo(o[0][0], o[0][1]);
+  for (let i = 1; i < o.length; i++) p.lineTo(o[i][0], o[i][1]);
+  p.closePath();
+  return p;
+}
+function buildHolesOnlyPath(shape) {
+  const p = new Path2D();
+  for (const h of shape.holes) {
+    p.moveTo(h[0][0], h[0][1]);
+    for (let i = 1; i < h.length; i++) p.lineTo(h[i][0], h[i][1]);
+    p.closePath();
+  }
+  return p;
+}
+const HEAD_PATH = buildPath(SHAPES.head);
+const HEAD_OUTLINE_PATH = buildOutlineOnlyPath(SHAPES.head);
+const HEAD_HOLES_PATH = buildHolesOnlyPath(SHAPES.head);
+const BODY_PATH = buildPath(SHAPES.body);
+const WING_PATH = buildPath(SHAPES.wing);
+const HAND_OUTLINE_PATH = buildOutlineOnlyPath(SHAPES.hand);
+const HAND_HOLES_PATH = buildHolesOnlyPath(SHAPES.hand);
+const FOOT_OUTLINE_PATH = buildOutlineOnlyPath(SHAPES.foot);
+const FOOT_HOLES_PATH = buildHolesOnlyPath(SHAPES.foot);
+
+const HAND_JOIN_X = 0.02;
+const HAND_JOIN_Y = -0.084;
+const FOOT_JOIN_X = 0.001;
+const FOOT_JOIN_Y = -0.48;
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+const START_TIME = Date.now();
+const INTRO_MS = 2600;
+function introAlpha() {
+  return Math.min(1, (Date.now() - START_TIME) / INTRO_MS);
+}
+
+function softGlow(x, y, radius, alpha) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(x, y, 0, x, y, radius);
+  g.addColorStop(0, `rgba(255,255,255,${alpha})`);
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+const SPACE_TYPES = ['star', 'star', 'star', 'galaxy', 'blackhole', 'planet', 'comet', 'nebula'];
+const spaceObjects = [];
+let lastSpawn = 0;
+const SPAWN_INTERVAL = 480;
+const MAX_OBJECTS = 28;
+
+function randRange(a, b) { return a + Math.random() * (b - a); }
+
+function spawnSpaceObject() {
+  if (spaceObjects.length >= MAX_OBJECTS) return;
+  const type = SPACE_TYPES[Math.floor(Math.random() * SPACE_TYPES.length)];
+  const margin = 60;
+  spaceObjects.push({
+    type,
+    x: randRange(margin, W - margin),
+    y: randRange(margin, H - margin),
+    r: type === 'nebula' ? randRange(40, 80)
+      : type === 'galaxy' ? randRange(22, 40)
+      : type === 'blackhole' ? randRange(18, 30)
+      : type === 'planet' ? randRange(10, 22)
+      : type === 'comet' ? randRange(4, 7)
+      : randRange(1.5, 4), // star
+    hue: Math.floor(randRange(0, 360)),
+    rot: randRange(0, Math.PI * 2),
+    spin: randRange(-0.01, 0.01),
+    born: Date.now(),
+    fadeInMs: 700,
+    state: 'alive',
+    suckStart: 0,
+    suckFromX: 0,
+    suckFromY: 0,
+    twinklePhase: randRange(0, Math.PI * 2),
+    vx: type === 'comet' ? randRange(-0.4, 0.4) : 0,
+    vy: type === 'comet' ? randRange(-0.4, 0.4) : 0
+  });
+}
+
+function popSpaceObject(obj) {
+  if (obj.state !== 'alive') return;
+  obj.state = 'sucking';
+  obj.suckStart = Date.now();
+  obj.suckFromX = obj.x;
+  obj.suckFromY = obj.y;
+}
+
+function drawSpaceObject(obj, alpha, scale) {
+  ctx.save();
+  ctx.translate(obj.x, obj.y);
+  ctx.rotate(obj.rot);
+  ctx.scale(scale, scale);
+  ctx.globalAlpha = alpha;
+
+  if (obj.type === 'star') {
+    const twinkle = 0.55 + 0.45 * Math.sin(Date.now() / 400 + obj.twinklePhase);
+    ctx.globalAlpha = alpha * twinkle;
+    // glow lembut di sekitar bintang
+    const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, obj.r * 4);
+    glow.addColorStop(0, 'rgba(255,255,255,0.5)');
+    glow.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath(); ctx.arc(0, 0, obj.r * 4, 0, Math.PI * 2); ctx.fill();
+
+    const spike = obj.r * 3.4;
+    const waist = obj.r * 0.45;
+    ctx.beginPath();
+    ctx.moveTo(0, -spike);
+    ctx.quadraticCurveTo(waist, -waist, spike, 0);
+    ctx.quadraticCurveTo(waist, waist, 0, spike);
+    ctx.quadraticCurveTo(-waist, waist, -spike, 0);
+    ctx.quadraticCurveTo(-waist, -waist, 0, -spike);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.fill();
+
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(0, 0, obj.r * 0.55, 0, Math.PI * 2);
+    ctx.fill();
+
+  } else if (obj.type === 'galaxy') {
+
+    const bulge = ctx.createRadialGradient(0, 0, 0, 0, 0, obj.r * 0.3);
+    bulge.addColorStop(0, 'rgba(255,255,255,0.9)');
+    bulge.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.save();
+    ctx.scale(1, 0.55);
+    ctx.fillStyle = bulge;
+    ctx.beginPath(); ctx.arc(0, 0, obj.r * 0.3, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+
+    for (let arm = 0; arm < 3; arm++) {
+      ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+      ctx.lineWidth = obj.r * 0.035;
+      ctx.beginPath();
+      for (let i = 0; i <= 28; i++) {
+        const t = i / 28;
+        const ang = t * Math.PI * 2.4 + arm * (Math.PI * 2 / 3);
+        const rad = t * obj.r;
+        const px = Math.cos(ang) * rad;
+        const py = Math.sin(ang) * rad * 0.42;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      for (let i = 5; i <= 26; i += 5) {
+        const t = i / 28;
+        const ang = t * Math.PI * 2.4 + arm * (Math.PI * 2 / 3);
+        const rad = t * obj.r;
+        const px = Math.cos(ang) * rad, py = Math.sin(ang) * rad * 0.42;
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.beginPath(); ctx.arc(px, py, obj.r * 0.018, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = obj.r * 0.02;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, obj.r, obj.r * 0.42, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+  } else if (obj.type === 'blackhole') {
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.lineWidth = obj.r * 0.13;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, obj.r * 1.85, obj.r * 0.62, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.lineWidth = obj.r * 0.07;
+    ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, obj.r * 1.4, obj.r * 0.46, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = obj.r * 0.035;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, obj.r * 1.08, obj.r * 1.08, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = '#000';
+    ctx.beginPath();
+    ctx.arc(0, 0, obj.r, 0, Math.PI * 2);
+    ctx.fill();
+
+  } else if (obj.type === 'planet') {
+    ctx.fillStyle = 'rgba(235,235,235,0.92)';
+    ctx.beginPath();
+    ctx.arc(0, 0, obj.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+    ctx.lineWidth = obj.r * 0.06;
+    ctx.stroke();
+
+    ctx.save();
+    ctx.beginPath(); ctx.arc(0, 0, obj.r, 0, Math.PI * 2); ctx.clip();
+    const bands = 3 + (obj.hue % 3);
+    ctx.strokeStyle = 'rgba(0,0,0,0.22)';
+    ctx.lineWidth = obj.r * 0.05;
+    for (let b = 1; b < bands; b++) {
+      const by = -obj.r + (obj.r * 2) * b / bands;
+      ctx.beginPath();
+      ctx.moveTo(-obj.r, by);
+      ctx.lineTo(obj.r, by);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    if (obj.hue % 2 === 0) {
+      ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+      ctx.lineWidth = obj.r * 0.08;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, obj.r * 1.7, obj.r * 0.35, 0.4, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      ctx.lineWidth = obj.r * 0.13;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, obj.r * 1.45, obj.r * 0.28, 0.4, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+  } else if (obj.type === 'comet') {
+    ctx.rotate(-obj.rot + Math.atan2(obj.vy, obj.vx));
+    const dustGrad = ctx.createLinearGradient(-obj.r * 11, 0, 0, 0);
+    dustGrad.addColorStop(0, 'rgba(255,255,255,0)');
+    dustGrad.addColorStop(1, 'rgba(255,255,255,0.8)');
+    ctx.strokeStyle = dustGrad;
+    ctx.lineWidth = obj.r * 0.6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-obj.r * 11, obj.r * 0.6);
+    ctx.quadraticCurveTo(-obj.r * 4, obj.r * 0.22, 0, 0);
+    ctx.stroke();
+    const thinGrad = ctx.createLinearGradient(-obj.r * 8.5, 0, 0, 0);
+    thinGrad.addColorStop(0, 'rgba(255,255,255,0)');
+    thinGrad.addColorStop(1, 'rgba(255,255,255,0.55)');
+    ctx.strokeStyle = thinGrad;
+    ctx.lineWidth = obj.r * 0.22;
+    ctx.beginPath();
+    ctx.moveTo(-obj.r * 8.5, -obj.r * 0.35);
+    ctx.quadraticCurveTo(-obj.r * 3, -obj.r * 0.12, 0, 0);
+    ctx.stroke();
+    const coma = ctx.createRadialGradient(0, 0, 0, 0, 0, obj.r * 2.2);
+    coma.addColorStop(0, 'rgba(255,255,255,0.85)');
+    coma.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = coma;
+    ctx.beginPath(); ctx.arc(0, 0, obj.r * 2.2, 0, Math.PI * 2); ctx.fill();
+    const nucleusPts = [
+      [0.85, 0], [0.5, 0.65], [-0.15, 0.8], [-0.75, 0.35],
+      [-0.7, -0.4], [-0.1, -0.85], [0.55, -0.55]
+    ];
+    ctx.beginPath();
+    nucleusPts.forEach(([nx, ny], i) => {
+      const px = nx * obj.r * 0.75, py = ny * obj.r * 0.75;
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    });
+    ctx.closePath();
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+
+  } else if (obj.type === 'nebula') {
+    const puffs = [
+      [0, 0, 1], [-0.45, -0.2, 0.65], [0.4, 0.25, 0.7],
+      [0.1, -0.4, 0.55], [-0.3, 0.4, 0.5], [0.5, -0.15, 0.45]
+    ];
+    for (const [px, py, pr] of puffs) {
+      const cx = px * obj.r, cy = py * obj.r, cr = pr * obj.r * 0.7;
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, cr);
+      grad.addColorStop(0, 'rgba(255,255,255,0.13)');
+      grad.addColorStop(0.6, 'rgba(255,255,255,0.06)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(cx, cy, cr, 0, Math.PI * 2); ctx.fill();
+    }
+    for (let i = 0; i < 4; i++) {
+      const ang = (i / 4) * Math.PI * 2 + obj.hue;
+      const rad = obj.r * (0.2 + 0.5 * ((i * 37) % 5) / 5);
+      const px = Math.cos(ang) * rad, py = Math.sin(ang) * rad * 0.7;
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath(); ctx.arc(px, py, obj.r * 0.015, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  ctx.restore();
+}
+
+function updateAndDrawSpaceObjects() {
+  const now = Date.now();
+  if (now - lastSpawn > SPAWN_INTERVAL) {
+    lastSpawn = now;
+    spawnSpaceObject();
+  }
+
+  for (let idx = spaceObjects.length - 1; idx >= 0; idx--) {
+    const obj = spaceObjects[idx];
+
+    if (obj.type === 'comet') { obj.x += obj.vx; obj.y += obj.vy; }
+    obj.rot += obj.spin;
+
+    let alpha = Math.min(1, (now - obj.born) / obj.fadeInMs);
+    let scale = 1;
+    if (obj.state === 'sucking') {
+      const SUCK_MS = 260;
+      const t = Math.min(1, (now - obj.suckStart) / SUCK_MS);
+      if (t >= 1) { spaceObjects.splice(idx, 1); continue; }
+      const te = t * t;
+      const head = points[0];
+      obj.x = obj.suckFromX + (head.x - obj.suckFromX) * te;
+      obj.y = obj.suckFromY + (head.y - obj.suckFromY) * te;
+      scale = Math.max(0.001, 1 - te);
+      alpha = 1 - te * 0.5;
+    }
+
+    softGlow(obj.x, obj.y, Math.max(16, obj.r * 3), 0.13 * alpha);
+    drawSpaceObject(obj, alpha, scale);
+
+    if (obj.state === 'alive') {
+      const head = points[0];
+      const dx = head.x - obj.x, dy = head.y - obj.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const headRadius = SEG_LEN * 5.5 * 0.32;
+      if (dist < headRadius + obj.r) popSpaceObject(obj);
+    }
+  }
+}
+
+const mouse = { x: W / 2, y: H / 2 };
+let hasMoved = false;
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; hasMoved = true; });
+window.addEventListener('touchmove', e => {
+  const t = e.touches[0];
+  if (t) { mouse.x = t.clientX; mouse.y = t.clientY; hasMoved = true; }
+}, { passive: true });
+
+const NUM_POINTS = 50;
+const SEG_LEN = 18;
+const points = [];
+for (let i = 0; i < NUM_POINTS; i++) points.push({ x: W / 2, y: H / 2 });
+
+let revealedCount = 0;
+const REVEAL_SPEED = 0.22;
+const REVEAL_MOVE_THRESHOLD = 0.05;
+
+function updateChain() {
+  const head = points[0];
+  const prevHeadX = head.x, prevHeadY = head.y;
+  const ease = hasMoved ? 0.08 : 0.02;
+  head.x += (mouse.x - head.x) * ease;
+  head.y += (mouse.y - head.y) * ease;
+
+  const headMoved = Math.hypot(head.x - prevHeadX, head.y - prevHeadY) > REVEAL_MOVE_THRESHOLD;
+  if (headMoved && revealedCount < NUM_POINTS - 1) {
+    revealedCount += REVEAL_SPEED;
+  }
+
+  for (let i = 1; i < NUM_POINTS; i++) {
+    const p = points[i], prev = points[i - 1];
+    const dx = prev.x - p.x, dy = prev.y - p.y;
+    const ang = Math.atan2(dy, dx);
+    p.x = prev.x - Math.cos(ang) * SEG_LEN;
+    p.y = prev.y - Math.sin(ang) * SEG_LEN;
+  }
+}
+
+function tailDirAt(i) {
+  if (i < NUM_POINTS - 1) {
+    const a = points[i], b = points[i + 1];
+    return Math.atan2(b.y - a.y, b.x - a.x);
+  } else {
+    const a = points[i - 1], b = points[i];
+    return Math.atan2(b.y - a.y, b.x - a.x);
+  }
+}
+
+function rotateToward(ctx, tx, ty) {
+  const ang = Math.atan2(ty, tx) - Math.PI / 2;
+  ctx.rotate(ang);
+}
+
+function taper(i) {
+  const t = i / (NUM_POINTS - 1);
+  const neck = 1.05;
+  const grow = 1 / (1 + Math.exp(-(t - 0.18) * 12));
+  const base = 1.25 * Math.pow(Math.max(0, 1 - t), 1.9) + 0.05;
+  return Math.max(0.05, neck + (base - neck) * grow);
+}
+
+function drawVertebra(i) {
+  const p = points[i];
+  const dir = tailDirAt(i);
+  const tx = Math.cos(dir), ty = Math.sin(dir);
+  const sizeY = SEG_LEN * 2.765;
+  const sizeX = sizeY * SHAPES.body.aspect * taper(i);
+
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  rotateToward(ctx, tx, ty);
+  ctx.scale(sizeX, sizeY);
+  const g = ctx.createLinearGradient(-0.5, 0, 0.5, 0);
+  g.addColorStop(0, 'rgba(0,0,0,0.28)');
+  g.addColorStop(0.5, 'rgba(0,0,0,1)');
+  g.addColorStop(1, 'rgba(0,0,0,0.28)');
+  ctx.fillStyle = g;
+  ctx.fill(BODY_PATH);
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  rotateToward(ctx, tx, ty);
+  ctx.scale(sizeX, sizeY);
+  ctx.lineWidth = 0.008;
+  ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+  ctx.stroke(BODY_PATH);
+  ctx.restore();
+}
+
+function drawWingAt(originIndex, sizeFactor, flapSpeed, flapAmount) {
+  const p = points[originIndex];
+  const dir = tailDirAt(originIndex);
+  const flap = Math.sin(Date.now() / flapSpeed) * flapAmount;
+  const tx = Math.cos(dir), ty = Math.sin(dir);
+
+  const size = SEG_LEN * sizeFactor * (1 + flap * 0.25);
+
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  rotateToward(ctx, tx, ty);
+  ctx.rotate(flap);
+  ctx.translate(0, -size * 0.5);
+  ctx.scale(size * SHAPES.wing.aspect, size);
+  const g = ctx.createRadialGradient(0, -0.15, 0, 0, -0.15, 0.62);
+  g.addColorStop(0, 'rgba(0,0,0,1)');
+  g.addColorStop(0.45, 'rgba(0,0,0,0.75)');
+  g.addColorStop(1, 'rgba(0,0,0,0.08)');
+  ctx.fillStyle = g;
+  ctx.fill(WING_PATH);
+  ctx.restore();
+}
+
+function drawWings() {
+  if (revealedCount >= 13) drawWingAt(13, 15, 900, 0.10);
+  if (revealedCount >= 23) drawWingAt(23, 8, 1000, 0.10);
+}
+
+function drawLimbAt(originIndex, sizeFactor, type) {
+  const p = points[originIndex];
+  const dir = tailDirAt(originIndex);
+  const tx = Math.cos(dir), ty = Math.sin(dir);
+  const size = SEG_LEN * sizeFactor;
+
+  const shape = type === 'hand' ? SHAPES.hand : SHAPES.foot;
+  const outlinePath = type === 'hand' ? HAND_OUTLINE_PATH : FOOT_OUTLINE_PATH;
+  const holesPath = type === 'hand' ? HAND_HOLES_PATH : FOOT_HOLES_PATH;
+  const joinX = type === 'hand' ? HAND_JOIN_X : FOOT_JOIN_X;
+  const joinY = type === 'hand' ? HAND_JOIN_Y : FOOT_JOIN_Y;
+
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  rotateToward(ctx, tx, ty);
+
+  ctx.translate(-joinX * size * shape.aspect, -joinY * size);
+  ctx.scale(size * shape.aspect, size);
+
+  const gradCX = 0;
+  const gradCY = type === 'hand' ? 0 : -0.42;
+  const g = ctx.createRadialGradient(gradCX, gradCY, 0, gradCX, gradCY, 0.7);
+  g.addColorStop(0, 'rgba(0,0,0,0)');
+  g.addColorStop(0.25, 'rgba(0,0,0,0.1)');
+  g.addColorStop(0.45, 'rgba(0,0,0,0.6)');
+  g.addColorStop(1, 'rgba(0,0,0,1)');
+  ctx.fillStyle = g;
+  ctx.fill(outlinePath);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill(holesPath);
+  ctx.restore();
+}
+
+function drawLimbs() {
+  if (revealedCount >= 12) drawLimbAt(12, 5, 'hand');
+  if (revealedCount >= 22) drawLimbAt(22, 5, 'foot');
+}
+
+function drawHead() {
+  const p = points[0];
+  const dir = tailDirAt(0);
+  const tx = Math.cos(dir), ty = Math.sin(dir);
+  const size = SEG_LEN * 5.5;
+
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  rotateToward(ctx, tx, ty);
+  ctx.scale(size * SHAPES.head.aspect, size);
+  ctx.fillStyle = '#000000';
+  ctx.fill(HEAD_OUTLINE_PATH);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill(HEAD_HOLES_PATH);
+  ctx.restore();
+}
+
+let backgroundCliffs = null;
+function midpointRidge(width, baseY, amplitude, roughness, iterations) {
+  let points = [
+    { x: 0, y: baseY + (Math.random() * 2 - 1) * amplitude * 0.4 },
+    { x: width, y: baseY + (Math.random() * 2 - 1) * amplitude * 0.4 }
+  ];
+  let disp = amplitude;
+  for (let it = 0; it < iterations; it++) {
+    const next = [];
+    for (let i = 0; i < points.length - 1; i++) {
+      const a = points[i], b = points[i + 1];
+      next.push(a);
+      const midX = (a.x + b.x) / 2;
+      const midY = (a.y + b.y) / 2 + (Math.random() * 2 - 1) * disp;
+      next.push({ x: midX, y: midY });
+    }
+    next.push(points[points.length - 1]);
+    points = next;
+    disp *= roughness;
+  }
+  return points;
+}
+
+function initBackgroundCliffs() {
+  const baseY = H * 0.6;
+  const layers = [
+    { points: midpointRidge(W, baseY - H * 0.08, H * 0.13, 0.58, 7), alpha: 0.045 },
+    { points: midpointRidge(W, baseY,            H * 0.16, 0.6,  7), alpha: 0.08 },
+    { points: midpointRidge(W, baseY + H * 0.09, H * 0.19, 0.62, 7), alpha: 0.14 }
+  ];
+  backgroundCliffs = { layers };
+}
+
+function drawBackgroundCliffs() {
+  if (!backgroundCliffs) initBackgroundCliffs();
+  for (const layer of backgroundCliffs.layers) {
+    ctx.beginPath();
+    ctx.moveTo(layer.points[0].x, layer.points[0].y);
+    for (let i = 1; i < layer.points.length; i++) ctx.lineTo(layer.points[i].x, layer.points[i].y);
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.closePath();
+    ctx.fillStyle = `rgba(255,255,255,${layer.alpha})`;
+    ctx.fill();
+  }
+}
+
+function drawBackground() {
+  // gelap gulita ala luar angkasa
+  const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.75);
+  g.addColorStop(0, '#111111');
+  g.addColorStop(0.6, '#050505');
+  g.addColorStop(1, '#000000');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  drawBackgroundCliffs();
+}
+
+function loop() {
+  drawBackground();
+  updateChain();
+
+  const introA = introAlpha();
+
+  updateAndDrawSpaceObjects();
+
+  ctx.save();
+  ctx.globalAlpha = introA;
+
+  drawLimbs();
+
+  for (let i = NUM_POINTS - 1; i >= 1; i--) {
+    if (i <= revealedCount) drawVertebra(i);
+  }
+  drawWings();
+  drawHead();
+
+  ctx.restore();
+
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
